@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+        <title>Blog</title>
+
+        <!-- Custom Inline CSS -->
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+
+            .container {
+                max-width: 900px;
+            }
+
+            h1 {
+                font-weight: bold;
+                color: #343a40;
+            }
+
+            img {
+                border-radius: 10px;
+                margin-top: 10px;
+            }
+
+            .blog-body pre {
+                font-size: 1rem;
+                color: #555;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+
+            .author-section img {
+                border: 2px solid #ddd;
+            }
+
+            .comment-form input {
+                font-size: 0.9rem;
+            }
+
+            .comment-form button {
+                background-color: #007bff;
+                border: none;
+                transition: all 0.3s ease;
+            }
+
+            .comment-form button:hover {
+                background-color: #0056b3;
+            }
+
+            .comment-section h2 {
+                margin-top: 20px;
+                color: #343a40;
+            }
+
+            .comment {
+                background-color: #ffffff;
+                padding: 10px;
+                border-radius: 8px;
+                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+                margin-bottom: 15px;
+            }
+
+            .comment img {
+                border: 2px solid #ccc;
+            }
+
+            .comment span {
+                font-weight: bold;
+                color: #343a40;
+            }
+
+            .comment pre {
+                margin: 5px 0 0;
+                color: #555;
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('./partials/nav') %>
+
+        <div class="container mt-4">
+            <!-- Blog Title -->
+            <h1>
+                <%= blog.title %>
+            </h1>
+
+            <!-- Blog Cover Image -->
+            <img src="<%= blog.coverImageUrl %>" width="450px" alt="Blog Cover">
+
+            <!-- Blog Content -->
+            <div class="blog-body">
+                <pre><%= blog.body %></pre>
+            </div>
+        </div>
+
+        <!-- Author Section -->
+        <div class="container mt-4 d-flex align-items-center author-section">
+            <img src="<%= blog.createdBy.profileImageUrl %>" width="100px" class="rounded-circle me-2"
+                alt="<%= blog.createdBy.fullName %>">
+            <span class="fw-bold">
+                <%= blog.createdBy.fullName %>
+            </span>
+        </div>
+
+        <!-- Comment Form (if User is Logged In) -->
+        <% if (locals.user) { %>
+            <div class="container mt-4">
+                <h2>Leave a Comment (<%= comments.length %>)</h2>
+                <form action="/blog/comment/<%= blog._id %>" method="post" class="comment-form">
+                    <input type="text" name="content" class="form-control" placeholder="Enter your comment" required>
+                    <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
+                </form>
+            </div>
+            <% } %>
+
+                <!-- Comments Section -->
+                <div class="container mt-4 comment-section">
+                    <h2>Comments</h2>
+
+                    <% if (comments.length===0) { %>
+                        <p class="text-muted">No comments yet. Be the first to comment!</p>
+                        <% } else { %>
+                            <% comments.forEach(comment=> { %>
+                                <div class="d-flex align-items-start mt-3 comment">
+                                    <img src="<%= comment.createdBy.profileImageUrl %>" width="50px"
+                                        class="rounded-circle me-2" alt="<%= comment.createdBy.fullName %>">
+                                    <div>
+                                        <span>
+                                            <%= comment.createdBy.fullName %>
+                                        </span>
+                                        <pre class="mt-1"><%= comment.content %></pre>
+                                    </div>
+                                </div>
+                                <% }) %>
+                                    <% } %>
+                </div>
+
+                <%- include('./partials/scripts') %>
+</body>
+
+</html>
